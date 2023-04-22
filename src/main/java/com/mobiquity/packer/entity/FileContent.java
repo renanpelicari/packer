@@ -1,5 +1,6 @@
 package com.mobiquity.packer.entity;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -8,7 +9,7 @@ import java.util.Objects;
  */
 public class FileContent {
 
-    private final Double weightLimit;
+    private final BigDecimal weightLimit;
 
     private final String[] productsAsString;
 
@@ -20,12 +21,12 @@ public class FileContent {
      *                         (e.g.: "75 : (1,85.31,€29) (2,14.55,€74) ", in this case productAsString is an Array
      *                         with 2 elements: [[1,85.31,€29], [2,14.55,€74]])
      */
-    public FileContent(final Double weightLimit, final String[] productsAsString) {
+    public FileContent(final BigDecimal weightLimit, final String[] productsAsString) {
         this.weightLimit = weightLimit;
         this.productsAsString = productsAsString;
     }
 
-    public Double getWeightLimit() {
+    public BigDecimal getWeightLimit() {
         return weightLimit;
     }
 

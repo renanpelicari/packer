@@ -5,6 +5,7 @@ import com.mobiquity.packer.entity.FileContent;
 import com.mobiquity.packer.entity.Pack;
 import com.mobiquity.packer.entity.Product;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,11 +38,11 @@ public class PackStrategy {
             return null;
         }
 
-        final Double weightLimit = fileContent.getWeightLimit();
+        final BigDecimal weightLimit = fileContent.getWeightLimit();
 
         final Set<Product> products = new HashSet<>();
-        Double totalWeight = 0d;
-        Double totalCost = 0d;
+        BigDecimal totalWeight = BigDecimal.ZERO;
+        BigDecimal totalCost = BigDecimal.ZERO;
 
         // create a map to be a base of combinations
         final HashMap<Integer, Product> productMap = new HashMap<>();
@@ -54,15 +55,15 @@ public class PackStrategy {
             if (validateMaxCostAndWeightOfProduct(product, weightLimit)) {
 
                 products.add(product);
-                totalWeight += product.getWeight();
-                totalCost += product.getCost();
+                totalWeight = totalWeight.add(product.getWeight());
+                totalCost = totalCost.add(product.getCost());
 
                 productMap.put(product.getIndex(), product);
             }
         }
 
         // if totalWeight less or equal the limit, it's not necessary to test other combinations
-        if (totalWeight <= weightLimit) {
+        if (totalWeight.compareTo(weightLimit) <= 0) {
             return new Pack(weightLimit, products, totalWeight, totalCost);
         }
 
@@ -72,7 +73,7 @@ public class PackStrategy {
         return pack;
     }
 
-    private static Pack getBestProductsOption(final Double weightLimit, final HashMap<Integer, Product> productMap) {
+    private static Pack getBestProductsOption(final BigDecimal weightLimit, final HashMap<Integer, Product> productMap) {
         LOG.info(String.format("BEGIN getBestProductsOption, weightLimit={%s}, productMap={%s}", weightLimit, productMap));
 
         // get all possible combinations between indexes
@@ -83,8 +84,8 @@ public class PackStrategy {
 
         for (Set<Integer> combinationIndexes : allIndexesCombinations) {
             final Set<Product> products = new HashSet<>();
-            Double totalWeight = 0d;
-            Double totalCost = 0d;
+            BigDecimal totalWeight = BigDecimal.ZERO;
+            BigDecimal totalCost = BigDecimal.ZERO;
 
 
             // for each possible combination, check all products based on index
@@ -92,8 +93,8 @@ public class PackStrategy {
                 final Product product = productMap.get(productIndex);
 
                 // sum the cost and weight for comparison
-                totalWeight += product.getWeight();
-                totalCost += product.getCost();
+                totalWeight = totalWeight.add(product.getWeight());
+                totalCost = totalCost.add(product.getCost());
 
                 products.add(product);
             }
@@ -120,7 +121,7 @@ public class PackStrategy {
             return false;
         }
 
-        if (fileContent.getWeightLimit() > 100) {
+        if (fileContent.getWeightLimit().compareTo(BigDecimal.valueOf(100)) > 0) {
             final String errorMsg = String.format("Weight of package (%f) exceeded 100", fileContent.getWeightLimit());
             LOG.log(Level.WARNING, errorMsg);
             isOk = false;
@@ -136,23 +137,23 @@ public class PackStrategy {
         return isOk;
     }
 
-    private static boolean validateMaxCostAndWeightOfProduct(final Product product, final Double weightLimit) {
+    private static boolean validateMaxCostAndWeightOfProduct(final Product product, final BigDecimal weightLimit) {
         boolean isOk = true;
 
-        if (product.getWeight() > weightLimit) {
+        if (product.getWeight().compareTo(weightLimit) > 0) {
             final String errorMsg = String.format("Weight of product (%f) is heavier than package limit (%f)",
                     product.getWeight(), weightLimit);
             LOG.log(Level.WARNING, errorMsg);
             isOk = false;
         }
 
-        if (product.getWeight() > 100) {
+        if (product.getWeight().compareTo(BigDecimal.valueOf(100)) > 0) {
             final String errorMsg = String.format("Weight of product (%f) exceeded 100", product.getWeight());
             LOG.log(Level.WARNING, errorMsg);
             isOk = false;
         }
 
-        if (product.getCost() > 100) {
+        if (product.getCost().compareTo(BigDecimal.valueOf(100)) > 0) {
             final String errorMsg = String.format("Cost of product (%f) exceeded 100", product.getCost());
             LOG.log(Level.WARNING, errorMsg);
             isOk = false;

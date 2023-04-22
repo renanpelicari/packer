@@ -12,8 +12,7 @@ public class CombinationStrategy {
 
     /**
      * Given all product index, this method will return all possible non repeat combinations between them.
-     * p.s.: The non repetition is guarantee by {@link Set}.
-     *
+     * p.s.: The non repetition is guaranteed by {@link Set}.
      * e.g.
      * input: 1, 2, 3
      * output: [[1], [2], [3], [1,2], [1,3], [2,3], [1,2,3]]

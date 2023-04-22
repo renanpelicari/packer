@@ -4,6 +4,7 @@ import com.mobiquity.exception.APIException;
 import com.mobiquity.packer.entity.FileContent;
 import com.mobiquity.packer.entity.Product;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,7 +34,7 @@ public class PackAdapter {
 
         try {
             final String[] lineContent = line.split(CONTENT_SEPARATOR);
-            final Double weightLimit = Double.valueOf(lineContent[0]);
+            final BigDecimal weightLimit = new BigDecimal(lineContent[0]);
 
             // this copyOfRange get only the products (index 0 = weightLimit; index 1 = colon)
             final String[] productsAsString = Arrays.copyOfRange(lineContent, 2, lineContent.length);
@@ -75,8 +76,8 @@ public class PackAdapter {
             }
 
             final Integer index = Integer.valueOf(content[0]);
-            final Double weight = Double.valueOf(content[1]);
-            final Double cost = Double.valueOf(content[2]);
+            final BigDecimal weight = new BigDecimal(content[1]);
+            final BigDecimal cost = new BigDecimal(content[2]);
 
             final Product product = new Product(index, weight, cost);
             LOG.info(String.format("END getProductFromString, product={%s}", product));

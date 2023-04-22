@@ -5,6 +5,8 @@ import com.mobiquity.packer.entity.FileContent;
 import com.mobiquity.packer.strategy.PackStrategy;
 import org.junit.Test;
 
+import java.math.BigDecimal;
+
 import static org.junit.Assert.*;
 
 /**
@@ -45,7 +47,8 @@ public class PackAdapterTest {
     @Test
     public void givenLineWithOnlyWeightLimit_whenCallLineToPack_thenReturnPackObjectOnlyWithWeight() {
         final FileContent fileContent = PackAdapter.getContentFromLine("87.65 : ");
-        assertEquals(Double.valueOf(87.65), fileContent.getWeightLimit());
+        assertNotNull(fileContent);
+        assertEquals(new BigDecimal("87.65"), fileContent.getWeightLimit());
         assertEquals(0, fileContent.getProductsAsString().length);
     }
 

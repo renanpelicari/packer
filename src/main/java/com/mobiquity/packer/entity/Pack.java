@@ -10,13 +10,13 @@ import java.util.Set;
  */
 public class Pack {
 
-    private final Double weightLimit;
+    private final BigDecimal weightLimit;
 
     private final Set<Product> products;
 
-    private final Double totalWeight;
+    private final BigDecimal totalWeight;
 
-    private final Double totalCost;
+    private final BigDecimal totalCost;
 
     /**
      * Default class constructor
@@ -26,18 +26,17 @@ public class Pack {
      * @param totalWeight the sum of {@link Product#getWeight()}
      * @param totalCost the sum of {@link Product#getCost()}
      */
-    public Pack(final Double weightLimit, final Set<Product> products, final Double totalWeight,
-                final Double totalCost) {
+    public Pack(final BigDecimal weightLimit, final Set<Product> products, final BigDecimal totalWeight,
+                final BigDecimal totalCost) {
         this.products = products;
-        this.weightLimit = setDoubleValuePrecision(weightLimit);
-        this.totalWeight = setDoubleValuePrecision(totalWeight);
-        this.totalCost = setDoubleValuePrecision(totalCost);
+        this.weightLimit = weightLimit;
+        this.totalWeight = totalWeight;
+        this.totalCost = totalCost;
     }
 
     /**
-     * This methods compare two different packs (the current and the new one),
+     * This method compare two different packs (the current and the new one),
      * and based on cost and weight return if the new pack is better.
-     *
      * If newPack is null, return false;
      * If newPack is heavier than limit, return false;
      * If newPack cost more, return true;
@@ -53,24 +52,21 @@ public class Pack {
         }
 
         // if newPack not respect weight limit, return false
-        if (newPack.getTotalWeight() > newPack.getWeightLimit()) {
+        if (newPack.getTotalWeight().compareTo(newPack.getWeightLimit()) > 0) {
             return false;
         }
 
         // if newPack cost more, return true
-        if (newPack.getTotalCost() > this.getTotalCost()) {
-            return true;
+        if (newPack.getTotalCost().compareTo(this.getTotalCost()) > 0) {
+                return true;
         }
 
         // if newPack cost same, but weight is lower, return true
-        return newPack.getTotalCost().equals(this.getTotalCost()) && newPack.getTotalWeight() < this.getTotalWeight();
+        return newPack.getTotalCost().compareTo(this.getTotalCost()) == 0 &&
+                newPack.getTotalWeight().compareTo(this.getTotalWeight()) < 0;
     }
 
-    private Double setDoubleValuePrecision(final Double value) {
-        return BigDecimal.valueOf(value).setScale(5, RoundingMode.HALF_UP).doubleValue();
-    }
-
-    public Double getWeightLimit() {
+    public BigDecimal getWeightLimit() {
         return weightLimit;
     }
 
@@ -78,11 +74,11 @@ public class Pack {
         return products;
     }
 
-    public Double getTotalWeight() {
+    public BigDecimal getTotalWeight() {
         return totalWeight;
     }
 
-    public Double getTotalCost() {
+    public BigDecimal getTotalCost() {
         return totalCost;
     }
 

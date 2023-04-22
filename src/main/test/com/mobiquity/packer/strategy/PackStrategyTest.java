@@ -5,6 +5,7 @@ import com.mobiquity.packer.entity.Pack;
 import com.mobiquity.packer.entity.Product;
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -65,7 +66,8 @@ public class PackStrategyTest {
     @Test
     public void givenLineWithOnlyWeightLimit_whenCallLineToPack_thenReturnPackObjectOnlyWithWeight() {
         final Pack pack = PackStrategy.getBetterPackFromInputLine("87.65 : ");
-        assertEquals(Double.valueOf(87.65), pack.getWeightLimit());
+        assertNotNull(pack);
+        assertEquals(new BigDecimal("87.65"), pack.getWeightLimit());
         assertEquals(Collections.emptySet(), pack.getProducts());
     }
 
@@ -149,14 +151,16 @@ public class PackStrategyTest {
     @Test
     public void givenLineWithOneElementOverWeight_whenCallLineToPack_thenReturnPackObjectOnlyWithWeight() {
         final Pack pack = PackStrategy.getBetterPackFromInputLine("15.3 : (1,15.31,€8.02)");
-        assertEquals(Double.valueOf(15.3), pack.getWeightLimit());
+        assertNotNull(pack);
+        assertEquals(new BigDecimal("15.3"), pack.getWeightLimit());
         assertEquals(Collections.emptySet(), pack.getProducts());
     }
 
     @Test
     public void givenLineWithOneProductWithSameWeightAsLimit_whenCallLineToPack_thenReturnPackWithProduct() {
         final Pack pack = PackStrategy.getBetterPackFromInputLine("15.311 : (1,15.311,€8.01)");
-        assertEquals(Double.valueOf(15.311), pack.getWeightLimit());
+        assertNotNull(pack);
+        assertEquals(new BigDecimal("15.311"), pack.getWeightLimit());
         assertEquals(1, pack.getProducts().size());
 
         final Product product = pack.getProducts().stream().findFirst().orElse(null);
@@ -165,14 +169,15 @@ public class PackStrategyTest {
         }
 
         assertEquals(Integer.valueOf(1), product.getIndex());
-        assertEquals(Double.valueOf(15.311), product.getWeight());
-        assertEquals(Double.valueOf(8.01), product.getCost());
+        assertEquals(new BigDecimal("15.311"), product.getWeight());
+        assertEquals(new BigDecimal("8.01"), product.getCost());
     }
 
     @Test
     public void givenLineWithTwoProducts_onlyOneIsEligible_whenCallLineToPack_thenReturnPackWithOneProduct() {
         final Pack pack = PackStrategy.getBetterPackFromInputLine("15.311 : (1,15.311,€8.01) (2,15.312,€8.01)");
-        assertEquals(Double.valueOf(15.311), pack.getWeightLimit());
+        assertNotNull(pack);
+        assertEquals(new BigDecimal("15.311"), pack.getWeightLimit());
         assertEquals(1, pack.getProducts().size());
 
         final Product product = pack.getProducts().stream().findFirst().orElse(null);
@@ -181,17 +186,18 @@ public class PackStrategyTest {
         }
 
         assertEquals(Integer.valueOf(1), product.getIndex());
-        assertEquals(Double.valueOf(15.311), product.getWeight());
-        assertEquals(Double.valueOf(8.01), product.getCost());
+        assertEquals(new BigDecimal("15.311"), product.getWeight());
+        assertEquals(new BigDecimal("8.01"), product.getCost());
     }
 
     @Test
     public void given2ProductsWithTotalWeightIsOverThanLimit_whenCallLineToPack_thenReturnPackWithOneProductWithHigherCost() {
         final Pack pack = PackStrategy.getBetterPackFromInputLine("10 : (1,5,€8.01) (2,5.01,€8.02)");
-        assertEquals(Double.valueOf(10), pack.getWeightLimit());
+        assertNotNull(pack);
+        assertEquals(new BigDecimal(10), pack.getWeightLimit());
         assertEquals(1, pack.getProducts().size());
-        assertEquals(Double.valueOf(5.01), pack.getTotalWeight());
-        assertEquals(Double.valueOf(8.02), pack.getTotalCost());
+        assertEquals(new BigDecimal("5.01"), pack.getTotalWeight());
+        assertEquals(new BigDecimal("8.02"), pack.getTotalCost());
 
         final Product product = pack.getProducts().stream().findFirst().orElse(null);
         if (product == null) {
@@ -199,17 +205,18 @@ public class PackStrategyTest {
         }
 
         assertEquals(Integer.valueOf(2), product.getIndex());
-        assertEquals(Double.valueOf(5.01), product.getWeight());
-        assertEquals(Double.valueOf(8.02), product.getCost());
+        assertEquals(new BigDecimal("5.01"), product.getWeight());
+        assertEquals(new BigDecimal("8.02"), product.getCost());
     }
 
     @Test
     public void givenInputExampleScenario1_whenCallLineToPack_thenReturnIndex4AsBetterOption() {
         final Pack pack = PackStrategy.getBetterPackFromInputLine("81 : (1,53.38,€45) (2,88.62,€98) (3,78.48,€3) (4,72.30,€76) (5,30.18,€9) (6,46.34,€48)");
-        assertEquals(Double.valueOf(81), pack.getWeightLimit());
+        assertNotNull(pack);
+        assertEquals(new BigDecimal(81), pack.getWeightLimit());
         assertEquals(1, pack.getProducts().size());
-        assertEquals(Double.valueOf(72.3), pack.getTotalWeight());
-        assertEquals(Double.valueOf(76), pack.getTotalCost());
+        assertEquals(new BigDecimal("72.30"), pack.getTotalWeight());
+        assertEquals(new BigDecimal(76), pack.getTotalCost());
 
         final Product product = pack.getProducts().stream().findFirst().orElse(null);
         if (product == null) {
@@ -217,28 +224,30 @@ public class PackStrategyTest {
         }
 
         assertEquals(Integer.valueOf(4), product.getIndex());
-        assertEquals(Double.valueOf(72.3), product.getWeight());
-        assertEquals(Double.valueOf(76), product.getCost());
+        assertEquals(new BigDecimal("72.30"), product.getWeight());
+        assertEquals(new BigDecimal(76), product.getCost());
     }
 
     @Test
     public void givenInputExampleScenario2_whenCallLineToPack_thenReturnNoneAsBetterOption() {
         final Pack pack = PackStrategy.getBetterPackFromInputLine("8 : (1,15.3,€34)");
-        assertEquals(Double.valueOf(8), pack.getWeightLimit());
+        assertNotNull(pack);
+        assertEquals(new BigDecimal(8), pack.getWeightLimit());
         assertEquals(0, pack.getProducts().size());
     }
 
     @Test
     public void givenInputExampleScenario3_whenCallLineToPack_thenReturnIndex2And7AsBetterOption() {
         final Pack pack = PackStrategy.getBetterPackFromInputLine("75 : (1,85.31,€29) (2,14.55,€74) (3,3.98,€16) (4,26.24,€55) (5,63.69,€52) (6,76.25,€75) (7,60.02,€74) (8,93.18,€35) (9,89.95,€78)");
-        assertEquals(Double.valueOf(75), pack.getWeightLimit());
+        assertNotNull(pack);
+        assertEquals(new BigDecimal(75), pack.getWeightLimit());
         assertEquals(2, pack.getProducts().size());
-        assertEquals(Double.valueOf(74.57), pack.getTotalWeight());
-        assertEquals(Double.valueOf(148), pack.getTotalCost());
+        assertEquals(new BigDecimal("74.57"), pack.getTotalWeight());
+        assertEquals(new BigDecimal(148), pack.getTotalCost());
 
         final Set<Product> expectedProducts = new HashSet<>(Arrays.asList(
-                new Product(2, 14.55, 74d),
-                new Product(7, 60.02, 74d)
+                new Product(2, new BigDecimal("14.55"), new BigDecimal(74)),
+                new Product(7, new BigDecimal("60.02"), new BigDecimal(74))
         ));
 
         assertEquals(expectedProducts, pack.getProducts());
@@ -247,14 +256,15 @@ public class PackStrategyTest {
     @Test
     public void givenInputExampleScenario4_whenCallLineToPack_thenReturnIndex8And9AsBetterOption() {
         final Pack pack = PackStrategy.getBetterPackFromInputLine("56 : (1,90.72,€13) (2,33.80,€40) (3,43.15,€10) (4,37.97,€16) (5,46.81,€36) (6,48.77,€79) (7,81.80,€45) (8,19.36,€79) (9,6.76,€64)");
-        assertEquals(Double.valueOf(56), pack.getWeightLimit());
+        assertNotNull(pack);
+        assertEquals(new BigDecimal(56), pack.getWeightLimit());
         assertEquals(2, pack.getProducts().size());
-        assertEquals(Double.valueOf(26.12), pack.getTotalWeight());
-        assertEquals(Double.valueOf(143), pack.getTotalCost());
+        assertEquals(new BigDecimal("26.12"), pack.getTotalWeight());
+        assertEquals(new BigDecimal(143), pack.getTotalCost());
 
         final Set<Product> expectedProducts = new HashSet<>(Arrays.asList(
-                new Product(8, 19.36, 79d),
-                new Product(9, 6.76, 64d)
+                new Product(8, new BigDecimal("19.36"), new BigDecimal(79)),
+                new Product(9, new BigDecimal("6.76"), new BigDecimal(64))
         ));
 
         assertEquals(expectedProducts, pack.getProducts());

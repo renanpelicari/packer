@@ -1,5 +1,6 @@
 package com.mobiquity.packer.entity;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 /**
@@ -9,9 +10,9 @@ public class Product {
 
     private final Integer index;
 
-    private final Double weight;
+    private final BigDecimal weight;
 
-    private final Double cost;
+    private final BigDecimal cost;
 
     /**
      * Default class constructor.
@@ -19,7 +20,7 @@ public class Product {
      * @param weight the weight of product
      * @param cost the cost of product
      */
-    public Product(final Integer index, final Double weight, final Double cost) {
+    public Product(final Integer index, final BigDecimal weight, final BigDecimal cost) {
         this.index = index;
         this.weight = weight;
         this.cost = cost;
@@ -29,11 +30,11 @@ public class Product {
         return index;
     }
 
-    public Double getWeight() {
+    public BigDecimal getWeight() {
         return weight;
     }
 
-    public Double getCost() {
+    public BigDecimal getCost() {
         return cost;
     }
 
