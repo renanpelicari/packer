@@ -3,6 +3,7 @@ package com.mobiquity.algorithm;
 import java.util.*;
 import java.util.logging.Logger;
 
+
 /**
  * This class implements a combinator algorithm.
  */
@@ -27,14 +28,17 @@ public class CombinationSet {
         Set<Set<Integer>> allCombinations = new HashSet<>();
 
         // first add (one element) combination
-        elements.forEach(element -> allCombinations.add(new TreeSet<>(Collections.singletonList(element))));
+        elements.forEach(element ->
+                allCombinations.add(new TreeSet<>(Collections.singletonList(element)))
+        );
 
-        for (Integer element : elements) {
+        // then add combination with more than 1 element
+        elements.forEach(element -> {
 
             // generate a copy from allCombinations, to not have problems with current loop
             Set<Set<Integer>> temporaryCombinations = new HashSet<>(allCombinations);
 
-            for (Set<Integer> combination : temporaryCombinations) {
+            temporaryCombinations.forEach(combination -> {
 
                 // get exists combination
                 Set<Integer> newCombination = new HashSet<>(combination);
@@ -44,8 +48,8 @@ public class CombinationSet {
 
                 // foreach element I compare with exists combination, and generate new ones
                 allCombinations.add(newCombination);
-            }
-        }
+            });
+        });
 
         LOG.info(String.format("END getCombinations, allCombinations={%s}", allCombinations));
         return allCombinations;

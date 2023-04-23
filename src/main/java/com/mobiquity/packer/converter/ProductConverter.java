@@ -19,8 +19,10 @@ public class ProductConverter {
 
     /**
      * Read product attributes from string and convert into {@link Product} object.
+     *
      * @param productString the string with product content (e.g.: "(1,53.38,€45)")
      * @return the {@link Product} object
+     * @throws APIException if there is an error while converting the string to {@link Product}
      */
     public static Product getProductFromString(final String productString) {
 
@@ -49,7 +51,6 @@ public class ProductConverter {
             return product;
 
         } catch (NumberFormatException ex) {
-
             final String errorMsg = String.format("Error to convert string to number, content=\"%s\"", productString);
             LOG.log(Level.SEVERE, errorMsg);
 

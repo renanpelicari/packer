@@ -56,7 +56,7 @@ public class Packer {
                           .collect(Collectors.joining(","));
 
               }).map(line -> (line.isBlank()) ? "-" : line)
-                      .collect(Collectors.joining("\n"));
+              .collect(Collectors.joining("\n"));
 
               reader.close();
 

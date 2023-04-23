@@ -16,27 +16,22 @@ public class PackComparator {
      * @return true if the new pack is better, false otherwise
      */
     public static boolean isNewPackBetter(final Pack currentPack, final Pack newPack) {
-        // if newPack is null, return false
-        if (newPack == null) {
+
+        // Return false if newPack is null or does not respect weight limit
+        if (newPack == null || newPack.getTotalWeight().compareTo(newPack.getWeightLimit()) > 0) {
             return false;
         }
 
+        // Return true if currentPack is null
         if (currentPack == null) {
             return true;
         }
 
-        // if newPack does not respect weight limit, return false
-        if (newPack.getTotalWeight().compareTo(newPack.getWeightLimit()) > 0) {
-            return false;
-        }
+        // Compare total cost and total weight
+        int costComparison = newPack.getTotalCost().compareTo(currentPack.getTotalCost());
+        int weightComparison = newPack.getTotalWeight().compareTo(currentPack.getTotalWeight());
 
-        // if newPack costs more, return true
-        if (newPack.getTotalCost().compareTo(currentPack.getTotalCost()) > 0) {
-            return true;
-        }
-
-        // if newPack costs the same, but weight is lower, return true
-        return newPack.getTotalCost().compareTo(currentPack.getTotalCost()) == 0
-                && newPack.getTotalWeight().compareTo(currentPack.getTotalWeight()) < 0;
+        // Return true if newPack costs more or costs the same but has lower weight
+        return costComparison > 0 || (costComparison == 0 && weightComparison < 0);
     }
 }

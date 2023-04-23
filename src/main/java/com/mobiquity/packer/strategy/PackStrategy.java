@@ -9,10 +9,7 @@ import com.mobiquity.packer.model.Pack;
 import com.mobiquity.packer.model.Product;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,6 +19,9 @@ import java.util.logging.Logger;
 public class PackStrategy {
 
     private static final Logger LOG = Logger.getLogger("PackStrategy");
+    private static final BigDecimal MAX_WEIGHT_LIMIT = BigDecimal.valueOf(100);
+    private static final BigDecimal MAX_COST_LIMIT = BigDecimal.valueOf(100);
+    private static final int MAX_PRODUCTS_LIMIT = 15;
 
     /**
      * Based on input line (e.g.: "81 : (1,53.38,€45) (2,88.62,€98) (3,78.48,€3)"),
@@ -76,8 +76,6 @@ public class PackStrategy {
         return pack;
     }
 
-
-
     private static Pack getBestProductsOption(final BigDecimal weightLimit, final HashMap<Integer, Product> productMap) {
         LOG.info(String.format("BEGIN getBestProductsOption, weightLimit={%s}, productMap={%s}", weightLimit, productMap));
 
@@ -107,11 +105,7 @@ public class PackStrategy {
             // create new pack, to compare with better one
             Pack newPack = new Pack(weightLimit, products, totalWeight, totalCost);
 
-            // if new pack is null or better, betterPack receive newPack
-//            if (betterPack == null || betterPack.isNewPackBetter(newPack)) {
-//                betterPack = newPack;
-//            }
-
+            // compare the packs and update if the new one is better
             if (PackComparator.isNewPackBetter(betterPack, newPack)) {
                 betterPack = newPack;
             }
@@ -130,14 +124,14 @@ public class PackStrategy {
             return false;
         }
 
-        if (fileContentDto.getWeightLimit().compareTo(BigDecimal.valueOf(100)) > 0) {
+        if (fileContentDto.getWeightLimit().compareTo(MAX_WEIGHT_LIMIT) > 0) {
             final String errorMsg = String.format("Weight of package (%f) exceeded 100", fileContentDto.getWeightLimit());
             LOG.log(Level.WARNING, errorMsg);
             isOk = false;
         }
 
         int totalProducts = fileContentDto.getProductsAsString().length;
-        if (totalProducts > 15) {
+        if (totalProducts > MAX_PRODUCTS_LIMIT) {
             final String errorMsg = String.format("Limit of products (%d) exceeded 15", totalProducts);
             LOG.log(Level.WARNING, errorMsg);
             isOk = false;
@@ -156,13 +150,13 @@ public class PackStrategy {
             isOk = false;
         }
 
-        if (product.getWeight().compareTo(BigDecimal.valueOf(100)) > 0) {
+        if (product.getWeight().compareTo(MAX_WEIGHT_LIMIT) > 0) {
             final String errorMsg = String.format("Weight of product (%f) exceeded 100", product.getWeight());
             LOG.log(Level.WARNING, errorMsg);
             isOk = false;
         }
 
-        if (product.getCost().compareTo(BigDecimal.valueOf(100)) > 0) {
+        if (product.getCost().compareTo(MAX_COST_LIMIT) > 0) {
             final String errorMsg = String.format("Cost of product (%f) exceeded 100", product.getCost());
             LOG.log(Level.WARNING, errorMsg);
             isOk = false;
