@@ -1,6 +1,7 @@
 package com.mobiquity.packer.strategy;
 
 import com.mobiquity.algorithm.CombinationSet;
+import com.mobiquity.packer.comparator.PackComparator;
 import com.mobiquity.packer.converter.PackConverter;
 import com.mobiquity.packer.converter.ProductConverter;
 import com.mobiquity.packer.dto.FileContentDto;
@@ -107,10 +108,13 @@ public class PackStrategy {
             Pack newPack = new Pack(weightLimit, products, totalWeight, totalCost);
 
             // if new pack is null or better, betterPack receive newPack
-            if (betterPack == null || betterPack.isNewPackBetter(newPack)) {
+//            if (betterPack == null || betterPack.isNewPackBetter(newPack)) {
+//                betterPack = newPack;
+//            }
+
+            if (PackComparator.isNewPackBetter(betterPack, newPack)) {
                 betterPack = newPack;
             }
-
         }
 
         LOG.info(String.format("END getBestProductsOption, betterPack={%s}", betterPack));

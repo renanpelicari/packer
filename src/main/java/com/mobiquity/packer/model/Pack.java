@@ -44,6 +44,7 @@ public class Pack {
      * @param newPack the new pack to compare
      * @return a boolean with result of comparision
      */
+    // TODO: externalize this to a static class
     public boolean isNewPackBetter(final Pack newPack) {
         // if newPack is null, return false
         if (newPack == null) {
