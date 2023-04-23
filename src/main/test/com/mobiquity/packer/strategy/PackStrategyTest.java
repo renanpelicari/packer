@@ -1,8 +1,8 @@
 package com.mobiquity.packer.strategy;
 
 import com.mobiquity.exception.APIException;
-import com.mobiquity.packer.entity.Pack;
-import com.mobiquity.packer.entity.Product;
+import com.mobiquity.packer.model.Pack;
+import com.mobiquity.packer.model.Product;
 import org.junit.Test;
 
 import java.math.BigDecimal;

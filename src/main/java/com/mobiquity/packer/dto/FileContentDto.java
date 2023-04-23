@@ -1,4 +1,4 @@
-package com.mobiquity.packer.entity;
+package com.mobiquity.packer.dto;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * A data structure to manipulate info from input file.
  */
-public class FileContent {
+public class FileContentDto {
 
     private final BigDecimal weightLimit;
 
@@ -21,7 +21,7 @@ public class FileContent {
      *                         (e.g.: "75 : (1,85.31,€29) (2,14.55,€74) ", in this case productAsString is an Array
      *                         with 2 elements: [[1,85.31,€29], [2,14.55,€74]])
      */
-    public FileContent(final BigDecimal weightLimit, final String[] productsAsString) {
+    public FileContentDto(final BigDecimal weightLimit, final String[] productsAsString) {
         this.weightLimit = weightLimit;
         this.productsAsString = productsAsString;
     }
@@ -46,17 +46,13 @@ public class FileContent {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
-        FileContent that = (FileContent) o;
-
-        if (!Objects.equals(weightLimit, that.weightLimit)) return false;
-        // Probably incorrect - comparing Object[] arrays with Arrays.equals
-        return Arrays.equals(productsAsString, that.productsAsString);
+        FileContentDto that = (FileContentDto) o;
+        return Objects.equals(weightLimit, that.weightLimit) && Arrays.equals(productsAsString, that.productsAsString);
     }
 
     @Override
     public int hashCode() {
-        int result = weightLimit != null ? weightLimit.hashCode() : 0;
+        int result = Objects.hash(weightLimit);
         result = 31 * result + Arrays.hashCode(productsAsString);
         return result;
     }

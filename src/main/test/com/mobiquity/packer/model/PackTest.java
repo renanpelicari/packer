@@ -1,4 +1,4 @@
-package com.mobiquity.packer.entity;
+package com.mobiquity.packer.model;
 
 import org.junit.Test;
 

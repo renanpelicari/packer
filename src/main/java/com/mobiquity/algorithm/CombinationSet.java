@@ -1,17 +1,17 @@
-package com.mobiquity.packer.strategy;
+package com.mobiquity.algorithm;
 
 import java.util.*;
 import java.util.logging.Logger;
 
 /**
- * Strategy class for combination algorithm.
+ * This class implements a combinator algorithm.
  */
-public class CombinationStrategy {
+public class CombinationSet {
 
     private static final Logger LOG = Logger.getLogger("CombinationStrategy");
 
     /**
-     * Given all product index, this method will return all possible non repeat combinations between them.
+     * Based on elements of a list, this method will return all possible non repeat combinations between them.
      * p.s.: The non repetition is guaranteed by {@link Set}.
      * e.g.
      * input: 1, 2, 3
@@ -20,9 +20,9 @@ public class CombinationStrategy {
      * @param elements the product index.
      * @return a {@link Set} containing all possible combination.
      */
-    public static Set<Set<Integer>> findNonRepeatedCombinations(final List<Integer> elements) {
+    public static Set<Set<Integer>> getCombinations(final List<Integer> elements) {
 
-        LOG.info(String.format("BEGIN findNonRepeatedCombinations, elements={%s}", elements));
+        LOG.info(String.format("BEGIN getCombinations, elements={%s}", elements));
 
         Set<Set<Integer>> allCombinations = new HashSet<>();
 
@@ -47,7 +47,7 @@ public class CombinationStrategy {
             }
         }
 
-        LOG.info(String.format("END findNonRepeatedCombinations, allCombinations={%s}", allCombinations));
+        LOG.info(String.format("END getCombinations, allCombinations={%s}", allCombinations));
         return allCombinations;
     }
 }

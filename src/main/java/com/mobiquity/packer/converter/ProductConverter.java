@@ -1,60 +1,24 @@
-package com.mobiquity.packer.adapter;
+package com.mobiquity.packer.converter;
 
 import com.mobiquity.exception.APIException;
-import com.mobiquity.packer.entity.FileContent;
-import com.mobiquity.packer.entity.Product;
+import com.mobiquity.packer.model.Product;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * Util class to convert String from file into object
  */
-public class PackAdapter {
+public class ProductConverter {
 
-    private static final Logger LOG = Logger.getLogger("PackAdapter");
+    private static final Logger LOG = Logger.getLogger("ProductConverter");
 
-    private static final String CONTENT_SEPARATOR = " ";
     private static final String PRODUCT_SEPARATOR = ",";
     private static final String REGEX_REPLACE_PRODUCT_STRING = "[()€]";
 
     /**
-     * Based on line from string, convert into {@link FileContent} object.
-     * @param line the content from input file (e.g.: "81 : (1,53.38,€45) (2,88.62,€98)")
-     * @return the {@link FileContent} object
-     */
-    public static FileContent getContentFromLine(final String line) {
-        LOG.info(String.format("BEGIN getContentFromLine, line={%s}", line));
-
-        if (line == null || line.isBlank()) {
-            return null;
-        }
-
-        try {
-            final String[] lineContent = line.split(CONTENT_SEPARATOR);
-            final BigDecimal weightLimit = new BigDecimal(lineContent[0]);
-
-            // this copyOfRange get only the products (index 0 = weightLimit; index 1 = colon)
-            final String[] productsAsString = Arrays.copyOfRange(lineContent, 2, lineContent.length);
-
-            final FileContent fileContent = new FileContent(weightLimit, productsAsString);
-            LOG.info(String.format("END getContentFromLine, fileContent={%s}", fileContent));
-
-            return fileContent;
-
-        } catch (NumberFormatException ex) {
-
-            final String errorMsg = String.format("Error to convert string to number, content=\"%s\"", line);
-            LOG.log(Level.SEVERE, errorMsg);
-
-            throw new APIException(errorMsg, ex);
-        }
-    }
-
-    /**
-     * Read product attributes from string and convert into {@link FileContent} object.
+     * Read product attributes from string and convert into {@link Product} object.
      * @param productString the string with product content (e.g.: "(1,53.38,€45)")
      * @return the {@link Product} object
      */

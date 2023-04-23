@@ -1,4 +1,4 @@
-package com.mobiquity.packer.entity;
+package com.mobiquity.packer.model;
 
 import java.math.BigDecimal;
 import java.util.Objects;

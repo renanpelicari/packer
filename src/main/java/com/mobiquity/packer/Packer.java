@@ -1,8 +1,8 @@
 package com.mobiquity.packer;
 
 import com.mobiquity.exception.APIException;
-import com.mobiquity.packer.entity.Pack;
-import com.mobiquity.packer.entity.Product;
+import com.mobiquity.packer.model.Pack;
+import com.mobiquity.packer.model.Product;
 import com.mobiquity.packer.strategy.PackStrategy;
 
 import java.io.BufferedReader;

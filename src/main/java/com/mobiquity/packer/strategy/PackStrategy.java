@@ -1,9 +1,11 @@
 package com.mobiquity.packer.strategy;
 
-import com.mobiquity.packer.adapter.PackAdapter;
-import com.mobiquity.packer.entity.FileContent;
-import com.mobiquity.packer.entity.Pack;
-import com.mobiquity.packer.entity.Product;
+import com.mobiquity.algorithm.CombinationSet;
+import com.mobiquity.packer.converter.PackConverter;
+import com.mobiquity.packer.converter.ProductConverter;
+import com.mobiquity.packer.dto.FileContentDto;
+import com.mobiquity.packer.model.Pack;
+import com.mobiquity.packer.model.Product;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -32,13 +34,13 @@ public class PackStrategy {
     public static Pack getBetterPackFromInputLine(final String line) {
         LOG.info(String.format("BEGIN getBetterPackFromInputLine, line={%s}", line));
 
-        final FileContent fileContent = PackAdapter.getContentFromLine(line);
+        final FileContentDto fileContentDto = PackConverter.getContentFromLine(line);
 
-        if (!validateFileContentConstraints(fileContent)) {
+        if (fileContentDto == null || !validateFileContentConstraints(fileContentDto)) {
             return null;
         }
 
-        final BigDecimal weightLimit = fileContent.getWeightLimit();
+        final BigDecimal weightLimit = fileContentDto.getWeightLimit();
 
         final Set<Product> products = new HashSet<>();
         BigDecimal totalWeight = BigDecimal.ZERO;
@@ -47,9 +49,9 @@ public class PackStrategy {
         // create a map to be a base of combinations
         final HashMap<Integer, Product> productMap = new HashMap<>();
 
-        for (final String productString : fileContent.getProductsAsString()) {
+        for (final String productString : fileContentDto.getProductsAsString()) {
 
-            final Product product = PackAdapter.getProductFromString(productString);
+            final Product product = ProductConverter.getProductFromString(productString);
 
             // filter only products that respect the weight limit and cost
             if (validateMaxCostAndWeightOfProduct(product, weightLimit)) {
@@ -73,12 +75,14 @@ public class PackStrategy {
         return pack;
     }
 
+
+
     private static Pack getBestProductsOption(final BigDecimal weightLimit, final HashMap<Integer, Product> productMap) {
         LOG.info(String.format("BEGIN getBestProductsOption, weightLimit={%s}, productMap={%s}", weightLimit, productMap));
 
         // get all possible combinations between indexes
         final Set<Set<Integer>> allIndexesCombinations =
-                CombinationStrategy.findNonRepeatedCombinations(new ArrayList<>(productMap.keySet()));
+                CombinationSet.getCombinations(new ArrayList<>(productMap.keySet()));
 
         Pack betterPack = null;
 
@@ -106,6 +110,7 @@ public class PackStrategy {
             if (betterPack == null || betterPack.isNewPackBetter(newPack)) {
                 betterPack = newPack;
             }
+
         }
 
         LOG.info(String.format("END getBestProductsOption, betterPack={%s}", betterPack));
@@ -113,21 +118,21 @@ public class PackStrategy {
         return betterPack;
     }
 
-    private static boolean validateFileContentConstraints(final FileContent fileContent) {
+    private static boolean validateFileContentConstraints(final FileContentDto fileContentDto) {
         boolean isOk = true;
 
-        if (fileContent == null) {
+        if (fileContentDto == null) {
             LOG.log(Level.WARNING, "The file is empty or null");
             return false;
         }
 
-        if (fileContent.getWeightLimit().compareTo(BigDecimal.valueOf(100)) > 0) {
-            final String errorMsg = String.format("Weight of package (%f) exceeded 100", fileContent.getWeightLimit());
+        if (fileContentDto.getWeightLimit().compareTo(BigDecimal.valueOf(100)) > 0) {
+            final String errorMsg = String.format("Weight of package (%f) exceeded 100", fileContentDto.getWeightLimit());
             LOG.log(Level.WARNING, errorMsg);
             isOk = false;
         }
 
-        int totalProducts = fileContent.getProductsAsString().length;
+        int totalProducts = fileContentDto.getProductsAsString().length;
         if (totalProducts > 15) {
             final String errorMsg = String.format("Limit of products (%d) exceeded 15", totalProducts);
             LOG.log(Level.WARNING, errorMsg);
