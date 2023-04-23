@@ -2,6 +2,9 @@ package com.mobiquity.packer.comparator;
 
 import com.mobiquity.packer.model.Pack;
 
+/**
+ * This is util class to compare two different packs.
+ */
 public class PackComparator {
 
     /**

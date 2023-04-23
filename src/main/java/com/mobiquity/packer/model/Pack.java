@@ -33,39 +33,6 @@ public class Pack {
         this.totalCost = totalCost;
     }
 
-    /**
-     * This method compare two different packs (the current and the new one),
-     * and based on cost and weight return if the new pack is better.
-     * If newPack is null, return false;
-     * If newPack is heavier than limit, return false;
-     * If newPack cost more, return true;
-     * If both pack cost the same, but new one is lighter than current, return true;
-     *
-     * @param newPack the new pack to compare
-     * @return a boolean with result of comparision
-     */
-    // TODO: externalize this to a static class
-    public boolean isNewPackBetter(final Pack newPack) {
-        // if newPack is null, return false
-        if (newPack == null) {
-            return false;
-        }
-
-        // if newPack not respect weight limit, return false
-        if (newPack.getTotalWeight().compareTo(newPack.getWeightLimit()) > 0) {
-            return false;
-        }
-
-        // if newPack cost more, return true
-        if (newPack.getTotalCost().compareTo(this.getTotalCost()) > 0) {
-                return true;
-        }
-
-        // if newPack cost same, but weight is lower, return true
-        return newPack.getTotalCost().compareTo(this.getTotalCost()) == 0 &&
-                newPack.getTotalWeight().compareTo(this.getTotalWeight()) < 0;
-    }
-
     public BigDecimal getWeightLimit() {
         return weightLimit;
     }
